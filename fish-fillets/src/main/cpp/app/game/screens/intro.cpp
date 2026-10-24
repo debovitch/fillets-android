@@ -85,6 +85,11 @@ void IntroScreen::own_update() {
 }
 
 void IntroScreen::own_draw(DrawTarget& target) {
+    // Android draws once before the first update. Empty Y'CbCr textures appear green.
+    // Keep the cleared black background until a decoded frame has been uploaded.
+    if(m_imgTime < 0.f)
+        return;
+
     Log::verbose<Log::video>("drawing frame ", m_imgTime, " @ ", timeAlive());
     const auto& coords = m_instance.graphics().coords(Graphics::CoordSystems::base);
     const auto program = m_instance.graphics().shaders().YCbCr();
